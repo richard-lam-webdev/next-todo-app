@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  nextjs-app:
+    build: .
+    container_name: nextjs-app
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - app-network
+    expose:
+      - "${NEXTJS_PORT}"
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_PORT}:80"
+    depends_on:
+      - nextjs-app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
